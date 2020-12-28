@@ -522,11 +522,11 @@ window.addEventListener('DOMContentLoaded', () => {
             });
             postData(body).then(data => {
                 statusMessage.textContent = data;
-                event.target[event.target.length - 1].textContent = data;
-                event.target[event.target.length - 1].setAttribute('disabled', true);
+                event.target.lastElementChild.textContent = data;
+                event.target.lastElementChild.setAttribute('disabled', true);
             }).catch(error => {
                 statusMessage.textContent = error;
-                event.target[event.target.length - 1].textContent = error;
+                event.target.lastElementChild.textContent = error;
             });
         });
 
@@ -547,7 +547,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 alert(data);
             }).catch(error => {
                 statusMessage.textContent = error;
-                event.target[event.target.length - 1].textContent = error;
+                event.target.lastElementChild.textContent = error;
             });
         });
     };
@@ -597,10 +597,14 @@ window.addEventListener('DOMContentLoaded', () => {
         };
         const validateStringInput = dom => {
             dom.forEach(item => {
-                item.addEventListener('input', () => {
+                item.addEventListener('input', event => {
                     if (item.value !== '') {
-                        if (!item.value[item.value.length - 1].match(/^[а-яА-Я ]/)) {
-                            item.value = item.value.substr(0, item.value.length - 1);
+                        const rusWordRegExp = /^[а-яА-Я ]+/g;
+                        // if (!item.value[item.value.length - 1].match(/^[а-яА-Я ]/)) {
+                        //     item.value = item.value.substr(0, item.value.length - 1);
+                        // }
+                        if (!item.value.match(rusWordRegExp)) {
+                            item.value = item.value.replace(/[^АЯаяЁё]/g, "");
                         }
                     }
                 });
@@ -619,8 +623,12 @@ window.addEventListener('DOMContentLoaded', () => {
         validateStringInput(formName);
         expandedFormName.addEventListener('input', () => {
             if (expandedFormName.value !== '') {
-                if (!expandedFormName.value[expandedFormName.value.length - 1].match(/^[а-яА-Я ]/)) {
-                    expandedFormName.value = expandedFormName.value.substr(0, expandedFormName.value.length - 1);
+                // if (!expandedFormName.value[expandedFormName.value.length - 1].match(/^[а-яА-Я ]/)) {
+                //     expandedFormName.value = expandedFormName.value.substr(0, expandedFormName.value.length - 1);
+                // }
+                const rusWordRegExp = /^[а-яА-Я ]+/g;
+                if (!expandedFormName.value.match(rusWordRegExp)) {
+                    expandedFormName.value = expandedFormName.value.replace(/[^АЯаяЁё]/g, "");
                 }
             }
         });
@@ -633,8 +641,12 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         expandedFormMessage.addEventListener('input', () => {
             if (expandedFormMessage.value !== '') {
-                if (!expandedFormMessage.value[expandedFormMessage.value.length - 1].match(/^[а-яА-Я ]/)) {
-                    expandedFormMessage.value = expandedFormMessage.value.substr(0, expandedFormMessage.value.length - 1);
+                // if (!expandedFormMessage.value[expandedFormMessage.value.length - 1].match(/^[а-яА-Я ]/)) {
+                //     expandedFormMessage.value = expandedFormMessage.value.substr(0, expandedFormMessage.value.length - 1);
+                // }
+                const rusWordRegExp = /^[а-яА-Я ]+/g;
+                if (!expandedFormMessage.value.match(rusWordRegExp)) {
+                    expandedFormMessage.value = expandedFormMessage.value.replace(/[^АЯаяЁё]/g, "");
                 }
             }
         });

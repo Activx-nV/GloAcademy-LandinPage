@@ -51,7 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (!menu.style.transform || menu.style.transform === 'translate(-100%)') {
                 menu.style.transform = `translate(0)`;
                 let flyInterval;
-                const flyAnimate = function () {
+                const flyAnimate = function() {
                     flyInterval = requestAnimationFrame(flyAnimate);
                     count += 20;
                     if (count < 1000 && document.documentElement.clientWidth > 1900) {
@@ -113,7 +113,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     opacityIn = 0;
                     popUp.style.display = 'block';
                     let opacityInterval;
-                    const opacityAnimate = function () {
+                    const opacityAnimate = function() {
                         opacityInterval = requestAnimationFrame(opacityAnimate);
                         opacityIn += 0.01;
                         if (opacityIn < 1.01) {
@@ -140,7 +140,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     if (document.documentElement.clientWidth >= 768) {
                         let opacityInterval;
                         opacityOut = 1;
-                        const opacityAnimate = function () {
+                        const opacityAnimate = function() {
                             opacityInterval = requestAnimationFrame(opacityAnimate);
                             opacityOut -= 0.01;
                             if (opacityOut > 0.01) {
@@ -172,7 +172,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         if (document.documentElement.clientWidth >= 768) {
                             let opacityInterval;
                             opacityOut = 1;
-                            const opacityAnimate = function () {
+                            const opacityAnimate = function() {
                                 opacityInterval = requestAnimationFrame(opacityAnimate);
                                 opacityOut -= 0.01;
                                 if (opacityOut > 0.01) {
@@ -457,7 +457,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const errorMessage = 'Что-то пошло не так...',
             loadMessage = 'Загрузка...',
             successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
-        const postData = (body, outputData, errorData) => {
+        const postData = body => {
             const promise = new Promise((resolve, reject) => {
                 const request = new XMLHttpRequest();
                 request.open('POST', './server.php');
@@ -467,10 +467,11 @@ window.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     if (request.status === 200) {
-                        resolve(outputData());
+                        //outputData();
+                        resolve(successMessage);
                     } else {
                         //errorData(request.status);
-                        reject(errorData(request.status));
+                        reject(request.status);
                     }
                 });
                 request.send(JSON.stringify(body));
@@ -496,14 +497,19 @@ window.addEventListener('DOMContentLoaded', () => {
             formData.forEach((val, key) => {
                 body[key] = val;
             });
-            postData(body,
-                () => {
-                    statusMessage.textContent = successMessage;
-                }, error => {
-                    statusMessage.textContent = errorMessage;
-                    console.log(error);
-                });
-
+            // postData(body,
+            //     () => {
+            //         statusMessage.textContent = successMessage;
+            //     }, error => {
+            //         statusMessage.textContent = errorMessage;
+            //         console.log(error);
+            //     });
+            postData(body).then(data => {
+                statusMessage.textContent = data;
+            }).catch(error => {
+                statusMessage.textContent = error;
+                console.log(error);
+            });
         });
 
         popUpForm.addEventListener('submit', event => {
@@ -514,16 +520,15 @@ window.addEventListener('DOMContentLoaded', () => {
             formData.forEach((val, key) => {
                 body[key] = val;
             });
-            postData(body,
-                () => {
-                    statusMessage.textContent = successMessage;
-                    event.target[event.target.length - 1].textContent = successMessage;
-                    event.target[event.target.length - 1].setAttribute('disabled', true);
-                }, error => {
-                    statusMessage.textContent = errorMessage;
-                    event.target[event.target.length - 1].textContent = errorMessage;
-                    console.log(error);
-                });
+            postData(body).then(data => {
+                statusMessage.textContent = data;
+                event.target[event.target.length - 1].textContent = data;
+                event.target[event.target.length - 1].setAttribute('disabled', true);
+            }).catch(error => {
+                statusMessage.textContent = error;
+                event.target[event.target.length - 1].textContent = error;
+                console.log(error);
+            });
         });
 
         popUpFormExpanded.addEventListener('submit', event => {
@@ -533,24 +538,24 @@ window.addEventListener('DOMContentLoaded', () => {
                 formMessage = document.getElementById('form2-message');
             event.preventDefault();
             statusMessage.textContent = loadMessage;
-            const formData = new FormData(popUpForm);
+            const formData = new FormData(popUpFormExpanded);
             let body = {};
             formData.forEach((val, key) => {
                 body[key] = val;
             });
-            postData(body,
-                () => {
-                    statusMessage.textContent = successMessage;
-                    formNameExpanded.value = '';
-                    formPhoneExpanded.value = '';
-                    formEmailExpanded.value = '';
-                    formMessage.value = '';
-                    alert(successMessage);
-                }, error => {
-                    statusMessage.textContent = errorMessage;
-                    event.target[event.target.length - 1].textContent = errorMessage;
-                    console.log(error);
-                });
+            postData(body).then(data => {
+                console.log(data);
+                statusMessage.textContent = data;
+                formNameExpanded.value = '';
+                formPhoneExpanded.value = '';
+                formEmailExpanded.value = '';
+                formMessage.value = '';
+                alert(data);
+            }).catch(error => {
+                statusMessage.textContent = error;
+                event.target[event.target.length - 1].textContent = error;
+                console.log(error);
+            });
         });
     };
     sendForm();

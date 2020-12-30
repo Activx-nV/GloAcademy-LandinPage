@@ -15,6 +15,7 @@ const sendForm = () => {
     const popUpForm = document.getElementById('form3');
     const popUpFormExpanded = document.getElementById('form2');
     const statusMessage = document.createElement('div');
+    const allPageInputs = document.querySelectorAll('input');
     statusMessage.style.cssText = 'font-size: 2rem;';
 
     form.addEventListener('submit', event => {
@@ -34,6 +35,9 @@ const sendForm = () => {
                 throw new Error('Status error, something went wrong.');
             }
             statusMessage.textContent = successMessage;
+            allPageInputs.forEach(item => {
+                item.value = '';
+            });
         }).catch(error => {
             statusMessage.textContent = errorMessage;
             console.log(error);
@@ -64,6 +68,9 @@ const sendForm = () => {
             statusMessage.textContent = successMessage;
             event.target.lastElementChild.textContent = successMessage;
             event.target.lastElementChild.setAttribute('disabled', true);
+            allPageInputs.forEach(item => {
+                item.value = '';
+            });
         }).catch(error => {
             statusMessage.textContent = errorMessage;
             event.target.lastElementChild.textContent = errorMessage;
@@ -72,7 +79,6 @@ const sendForm = () => {
     });
 
     popUpFormExpanded.addEventListener('submit', event => {
-        const allPageInputs = document.querySelectorAll('input');
         event.preventDefault();
         statusMessage.textContent = loadMessage;
         const formData = new FormData(popUpFormExpanded);
@@ -88,10 +94,24 @@ const sendForm = () => {
             allPageInputs.forEach(item => {
                 item.value = '';
             });
-            alert(successMessage);
+            event.target.lastElementChild.lastElementChild.innerHTML = `<button class="btn form-btn" type="submit">
+                ${successMessage}
+                </button>`;
+            setTimeout(() => {
+                event.target.lastElementChild.lastElementChild.innerHTML = `<button class="btn form-btn" type="submit">
+                Оставить заявку!
+                </button>`;
+            }, 2500);
         }).catch(error => {
             statusMessage.textContent = errorMessage;
-            event.target.lastElementChild.textContent = errorMessage;
+            event.target.lastElementChild.lastElementChild.innerHTML = `<button class="btn form-btn" type="submit">
+                ${errorMessage}
+                </button>`;
+            setTimeout(() => {
+                event.target.lastElementChild.lastElementChild.innerHTML = `<button class="btn form-btn" type="submit">
+                Оставить заявку!
+                </button>`;
+            }, 2500);
             console.error(error);
         });
     });
